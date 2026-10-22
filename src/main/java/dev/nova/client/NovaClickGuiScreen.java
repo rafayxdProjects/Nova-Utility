@@ -8,6 +8,8 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -31,53 +33,39 @@ public final class NovaClickGuiScreen extends Screen {
     }
 
     private void refreshModules() {
-        modules = new ArrayList<>(
-            NovaModules.snapshot().entrySet()
-        );
+        modules = new ArrayList<>(NovaModules.snapshot().entrySet());
     }
 
     @Override
     public void render(
-        GuiGraphics graphics,
-        int mouseX,
-        int mouseY,
-        float partialTick
+        GuiGraphics graphics, int mouseX, int mouseY, float partialTick
     ) {
-        graphics.fill(
-            0, 0, width, height, 0x99060910
-        );
+        graphics.fill(0, 0, width, height, 0x99060910);
 
         int panelHeight = 48 + modules.size() * ROW_HEIGHT;
 
         graphics.fill(
-            panelX, panelY,
-            panelX + PANEL_WIDTH, panelY + panelHeight,
-            0xF0141722
+            panelX, panelY, panelX + PANEL_WIDTH,
+            panelY + panelHeight, 0xF0141722
         );
-
         graphics.fill(
-            panelX, panelY,
-            panelX + PANEL_WIDTH, panelY + 3,
-            0xFF8B5CF6
+            panelX, panelY, panelX + PANEL_WIDTH,
+            panelY + 3, 0xFF8B5CF6
         );
 
         graphics.drawCenteredString(
-            font, "NOVA UTILITY",
-            panelX + PANEL_WIDTH / 2,
-            panelY + 12,
-            0xFFFFFFFF
+            font, "NOVA UTILITY", panelX + PANEL_WIDTH / 2,
+            panelY + 12, 0xFFFFFFFF
         );
-
         graphics.drawCenteredString(
             font, "CLICK MODULES TO TOGGLE",
-            panelX + PANEL_WIDTH / 2,
-            panelY + 29,
-            0xFFB9A5FF
+            panelX + PANEL_WIDTH / 2, panelY + 29, 0xFFB9A5FF
         );
 
         for (int i = 0; i < modules.size(); i++) {
             var entry = modules.get(i);
             int rowY = panelY + 43 + i * ROW_HEIGHT;
+
             boolean hovered =
                 mouseX >= panelX + 8
                 && mouseX <= panelX + PANEL_WIDTH - 8
@@ -86,23 +74,19 @@ public final class NovaClickGuiScreen extends Screen {
 
             graphics.fill(
                 panelX + 8, rowY,
-                panelX + PANEL_WIDTH - 8,
-                rowY + ROW_HEIGHT - 2,
+                panelX + PANEL_WIDTH - 8, rowY + ROW_HEIGHT - 2,
                 hovered ? 0xFF303044 : 0xFF202330
             );
 
             graphics.drawString(
-                font, entry.getKey(),
-                panelX + 16, rowY + 7,
+                font, entry.getKey(), panelX + 16, rowY + 7,
                 0xFFE5E7EB
             );
 
             boolean enabled = entry.getValue();
-
             graphics.drawString(
                 font, enabled ? "ON" : "OFF",
-                panelX + PANEL_WIDTH - 42,
-                rowY + 7,
+                panelX + PANEL_WIDTH - 42, rowY + 7,
                 enabled ? 0xFF8B5CF6 : 0xFF9CA3AF
             );
         }
@@ -111,12 +95,11 @@ public final class NovaClickGuiScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(
-        double mouseX,
-        double mouseY,
-        int button
-    ) {
-        if (button == 0) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            double mouseX = event.x();
+            double mouseY = event.y();
+
             for (int i = 0; i < modules.size(); i++) {
                 int rowY = panelY + 43 + i * ROW_HEIGHT;
 
@@ -127,31 +110,29 @@ public final class NovaClickGuiScreen extends Screen {
                     && mouseY < rowY + ROW_HEIGHT
                 ) {
                     String name = modules.get(i).getKey();
-                    boolean enabled = NovaModules.isEnabled(name);
-
-                    NovaModules.setEnabled(name, !enabled);
+                    NovaModules.setEnabled(
+                        name, !NovaModules.isEnabled(name)
+                    );
                     refreshModules();
                     return true;
                 }
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean keyPressed(
-        int keyCode,
-        int scanCode,
-        int modifiers
-    ) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE
-            || keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {
+    public boolean keyPressed(KeyEvent event) {
+        if (
+            event.key() == GLFW.GLFW_KEY_ESCAPE
+            || event.key() == GLFW.GLFW_KEY_RIGHT_SHIFT
+        ) {
             Minecraft.getInstance().setScreen(null);
             return true;
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
