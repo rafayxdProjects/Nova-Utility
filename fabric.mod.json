@@ -3,14 +3,9 @@
   "id": "nova_utility",
   "version": "${version}",
   "name": "Nova Utility",
-  "description": "A modular Fabric client project for Minecraft 1.21.11.",
-  "authors": [
-    "rafayxdProjects"
-  ],
-  "contact": {
-    "sources": "https://github.com/rafayxdProjects/Nova-Utility"
-  },
-  "license": "All-Rights-Reserved",
+  "description": "Nova Utility client HUD and module framework.",
+  "authors": ["Nova Utility"],
+  "license": "MIT",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -19,7 +14,7 @@
   },
   "depends": {
     "fabricloader": ">=0.18.0",
-    "minecraft": "~1.21.11",
+    "minecraft": "1.21.11",
     "java": ">=21",
     "fabric-api": "*"
   }
