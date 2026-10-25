@@ -1,4 +1,3 @@
-
 package dev.nova.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -28,8 +27,8 @@ public final class NovaUtilityClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         NovaModules.registerDefaults();
+        NovaCrystalESP.initialize();
 
-        // Right Shift: open ClickGUI
         openGuiKey = KeyBindingHelper.registerKeyBinding(
             new KeyMapping(
                 "key.nova_utility.open_gui",
@@ -39,7 +38,6 @@ public final class NovaUtilityClient implements ClientModInitializer {
             )
         );
 
-        // H: toggle HUD
         toggleHudKey = KeyBindingHelper.registerKeyBinding(
             new KeyMapping(
                 "key.nova_utility.toggle_hud",
@@ -65,7 +63,6 @@ public final class NovaUtilityClient implements ClientModInitializer {
             }
         });
 
-        // Main menu tribute
         ScreenEvents.AFTER_INIT.register(
             (client, screen, scaledWidth, scaledHeight) -> {
                 if (screen instanceof TitleScreen) {
@@ -77,39 +74,23 @@ public final class NovaUtilityClient implements ClientModInitializer {
                             int bottom = renderedScreen.height - 44;
 
                             graphics.drawString(
-                                mc.font,
-                                "NOVA UTILITY",
-                                left,
-                                bottom,
-                                0xFF8B5CF6,
-                                true
+                                mc.font, "NOVA UTILITY",
+                                left, bottom, 0xFF8B5CF6, true
                             );
 
                             graphics.drawString(
-                                mc.font,
-                                "Author: Rafay",
-                                left,
-                                bottom + 12,
-                                0xFFFFFFFF,
-                                true
+                                mc.font, "Author: Rafay",
+                                left, bottom + 12, 0xFFFFFFFF, true
                             );
 
                             graphics.drawString(
-                                mc.font,
-                                "Dedicated to Gaza",
-                                left,
-                                bottom + 24,
-                                0xFF55CC77,
-                                true
+                                mc.font, "Dedicated to Gaza",
+                                left, bottom + 24, 0xFF55CC77, true
                             );
 
                             graphics.drawString(
-                                mc.font,
-                                "Free Palestine",
-                                left,
-                                bottom + 36,
-                                0xFFFFFFFF,
-                                true
+                                mc.font, "Free Palestine",
+                                left, bottom + 36, 0xFFFFFFFF, true
                             );
                         }
                     );
@@ -117,7 +98,6 @@ public final class NovaUtilityClient implements ClientModInitializer {
             }
         );
 
-        // HUD registration
         HudElementRegistry.attachElementBefore(
             VanillaHudElements.CHAT,
             Identifier.fromNamespaceAndPath(MOD_ID, "nova_hud"),
@@ -144,34 +124,24 @@ public final class NovaUtilityClient implements ClientModInitializer {
         }
 
         graphics.fill(
-            x, y, x + width, y + height,
-            0xB0101420
+            x, y, x + width, y + height, 0xB0101420
         );
 
         graphics.fill(
-            x, y, x + 3, y + height,
-            0xFF8B5CF6
+            x, y, x + 3, y + height, 0xFF8B5CF6
         );
 
         graphics.drawString(
-            mc.font,
-            "NOVA UTILITY",
-            x + 10,
-            y + 7,
-            0xFFFFFFFF,
-            true
+            mc.font, "NOVA UTILITY",
+            x + 10, y + 7, 0xFFFFFFFF, true
         );
 
         int lineY = y + 20;
 
         if (mc.player != null && NovaModules.isEnabled("FPS")) {
             graphics.drawString(
-                mc.font,
-                "FPS  " + mc.getFps(),
-                x + 10,
-                lineY,
-                0xFFE5E7EB,
-                true
+                mc.font, "FPS  " + mc.getFps(),
+                x + 10, lineY, 0xFFE5E7EB, true
             );
             lineY += 13;
         }
@@ -188,12 +158,8 @@ public final class NovaUtilityClient implements ClientModInitializer {
             );
 
             graphics.drawString(
-                mc.font,
-                coords,
-                x + 10,
-                lineY,
-                0xFFE5E7EB,
-                true
+                mc.font, coords,
+                x + 10, lineY, 0xFFE5E7EB, true
             );
         }
     }
