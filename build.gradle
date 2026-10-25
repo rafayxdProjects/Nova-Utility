@@ -1,3 +1,4 @@
+
 plugins {
     id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 }
@@ -12,12 +13,17 @@ base {
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    modImplementation files("libs/baritone-api-fabric-1.17.0.jar")
+    include files("libs/baritone-api-fabric-1.17.0.jar")
 }
 
 processResources {
     inputs.property "version", project.version
+
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
@@ -35,6 +41,8 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archives_base_name}" }
+        rename {
+            "${it}_${project.archives_base_name}"
+        }
     }
 }
