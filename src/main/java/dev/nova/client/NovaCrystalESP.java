@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.EndCrystal;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 
 public final class NovaCrystalESP {
     private static final double MAX_DISTANCE = 96.0;
