@@ -8,11 +8,15 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.resources.Identifier;
+
 import org.lwjgl.glfw.GLFW;
 
 public final class NovaUtilityClient implements ClientModInitializer {
@@ -25,6 +29,7 @@ public final class NovaUtilityClient implements ClientModInitializer {
     public void onInitializeClient() {
         NovaModules.registerDefaults();
 
+        // Right Shift: open ClickGUI
         openGuiKey = KeyBindingHelper.registerKeyBinding(
             new KeyMapping(
                 "key.nova_utility.open_gui",
@@ -34,6 +39,7 @@ public final class NovaUtilityClient implements ClientModInitializer {
             )
         );
 
+        // H: toggle HUD
         toggleHudKey = KeyBindingHelper.registerKeyBinding(
             new KeyMapping(
                 "key.nova_utility.toggle_hud",
@@ -59,6 +65,59 @@ public final class NovaUtilityClient implements ClientModInitializer {
             }
         });
 
+        // Main menu tribute
+        ScreenEvents.AFTER_INIT.register(
+            (client, screen, scaledWidth, scaledHeight) -> {
+                if (screen instanceof TitleScreen) {
+                    ScreenEvents.afterRender(screen).register(
+                        (renderedScreen, graphics, mouseX, mouseY, tickDelta) -> {
+                            Minecraft mc = Minecraft.getInstance();
+
+                            int left = 10;
+                            int bottom = renderedScreen.height - 44;
+
+                            graphics.drawString(
+                                mc.font,
+                                "NOVA UTILITY",
+                                left,
+                                bottom,
+                                0xFF8B5CF6,
+                                true
+                            );
+
+                            graphics.drawString(
+                                mc.font,
+                                "Author: Rafay",
+                                left,
+                                bottom + 12,
+                                0xFFFFFFFF,
+                                true
+                            );
+
+                            graphics.drawString(
+                                mc.font,
+                                "Dedicated to Gaza",
+                                left,
+                                bottom + 24,
+                                0xFF55CC77,
+                                true
+                            );
+
+                            graphics.drawString(
+                                mc.font,
+                                "Free Palestine",
+                                left,
+                                bottom + 36,
+                                0xFFFFFFFF,
+                                true
+                            );
+                        }
+                    );
+                }
+            }
+        );
+
+        // HUD registration
         HudElementRegistry.attachElementBefore(
             VanillaHudElements.CHAT,
             Identifier.fromNamespaceAndPath(MOD_ID, "nova_hud"),
@@ -67,7 +126,8 @@ public final class NovaUtilityClient implements ClientModInitializer {
     }
 
     private static void renderHud(
-        GuiGraphics graphics, DeltaTracker tickCounter
+        GuiGraphics graphics,
+        DeltaTracker tickCounter
     ) {
         Minecraft mc = Minecraft.getInstance();
 
@@ -84,38 +144,56 @@ public final class NovaUtilityClient implements ClientModInitializer {
         }
 
         graphics.fill(
-            x, y, x + width, y + height, 0xB0101420
+            x, y, x + width, y + height,
+            0xB0101420
         );
+
         graphics.fill(
-            x, y, x + 3, y + height, 0xFF8B5CF6
+            x, y, x + 3, y + height,
+            0xFF8B5CF6
         );
 
         graphics.drawString(
-            mc.font, "NOVA UTILITY",
-            x + 10, y + 7, 0xFFFFFFFF, true
+            mc.font,
+            "NOVA UTILITY",
+            x + 10,
+            y + 7,
+            0xFFFFFFFF,
+            true
         );
 
         int lineY = y + 20;
 
         if (mc.player != null && NovaModules.isEnabled("FPS")) {
             graphics.drawString(
-                mc.font, "FPS  " + mc.getFps(),
-                x + 10, lineY, 0xFFE5E7EB, true
+                mc.font,
+                "FPS  " + mc.getFps(),
+                x + 10,
+                lineY,
+                0xFFE5E7EB,
+                true
             );
             lineY += 13;
         }
 
         if (mc.player != null && NovaModules.isEnabled("Coordinates")) {
             var player = mc.player;
+
             String coords = String.format(
                 java.util.Locale.ROOT,
                 "XYZ  %.1f  %.1f  %.1f",
-                player.getX(), player.getY(), player.getZ()
+                player.getX(),
+                player.getY(),
+                player.getZ()
             );
 
             graphics.drawString(
-                mc.font, coords,
-                x + 10, lineY, 0xFFE5E7EB, true
+                mc.font,
+                coords,
+                x + 10,
+                lineY,
+                0xFFE5E7EB,
+                true
             );
         }
     }
